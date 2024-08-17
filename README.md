@@ -29,7 +29,7 @@ git clone https://github.com/muhammadkhalid-03/djangocipher.git
 #### Create virtual environment
 
 ```
-cd backend
+cd djangocipher/backend
 python3 -m venv env
 source env/bin/activate
 ```
@@ -47,6 +47,12 @@ python manage.py runserver
 ```
 
 ### Set up the frontend
+
+In a new terminal window, navigate to the frontend directory:
+
+```
+cd djangocipher/frontend
+```
 
 #### Run the Next.js development server
 
