@@ -51,7 +51,13 @@ python manage.py runserver
 In a new terminal window, navigate to the frontend directory:
 
 ```
-cd djangocipher/frontend
+cd djangocipher/frontend/
+```
+
+#### Install all the necessary dependencies
+
+```
+npm install
 ```
 
 #### Run the Next.js development server
