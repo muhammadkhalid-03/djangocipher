@@ -2,6 +2,8 @@
 
 A program to crack substitution ciphers using the Metropolis-Hastings algorithm.
 
+The python implementation of the algorithm is available at [MCMC Cipher Cracker](https://github.com/muhammadkhalid-03/MCMC-Cipher-Cracker.git)
+
 ## Technologies
 
 Next.js\
