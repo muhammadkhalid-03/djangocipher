@@ -13,7 +13,7 @@ import torch
 
 
 
-transition_matrix_file = '/Users/muhammadkhalid/Desktop/CSC395/homework4/TransitionMatrix.json'  # Update with the correct path
+transition_matrix_file = 'TransitionMatrix.json'  # Update with the correct path
 with open(transition_matrix_file) as reader:
     M = json.load(reader)
 
