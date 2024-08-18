@@ -15,7 +15,7 @@ from django.conf import settings
 
 
 
-transition_matrix_file = os.path.join(settings.BASE_DIR, 'backend', 'catalog', 'TransitionMatrix.json')
+transition_matrix_file = os.path.join(settings.BASE_DIR, 'catalog', 'TransitionMatrix.json')
 with open(transition_matrix_file) as reader:
     M = json.load(reader)
 
