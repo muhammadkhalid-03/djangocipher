@@ -10,10 +10,12 @@ from rest_framework.permissions import AllowAny
 from catalog.utils import encipher, metropolisHastings, permuteAlph
 from catalog.gpt2 import tokenizer, model
 import torch
+import os
+from django.conf import settings
 
 
 
-transition_matrix_file = 'djangocipher/backend/catalog/TransitionMatrix.json'  # Update with the correct path
+transition_matrix_file = os.path.join(settings.BASE_DIR, 'backend', 'catalog', 'TransitionMatrix.json')
 with open(transition_matrix_file) as reader:
     M = json.load(reader)
 
