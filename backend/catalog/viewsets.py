@@ -11,9 +11,9 @@ from catalog.utils import encipher, metropolisHastings, permuteAlph
 from catalog.gpt2 import tokenizer, model
 import torch
 
+backend/catalog/TransitionMatrix.json
 
-
-transition_matrix_file = 'TransitionMatrix.json'  # Update with the correct path
+transition_matrix_file = 'backend/catalog/TransitionMatrix.json'  # Update with the correct path
 with open(transition_matrix_file) as reader:
     M = json.load(reader)
 
