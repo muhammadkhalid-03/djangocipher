@@ -1,7 +1,6 @@
 import random
 import json
 import math
-import numpy as np
 
 
 """
