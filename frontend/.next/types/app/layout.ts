@@ -1,4 +1,4 @@
-// File: /Users/muhammadkhalid/Desktop/Projects/DjangoEncryption/frontend/app/layout.tsx
+// File: /Users/muhammadkhalid/Desktop/projects/DjangoEncryption/frontend/app/layout.tsx
 import * as entry from '../../../app/layout.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -8,10 +8,10 @@ from catalog.serializers import CatalogSerializer, ContactSerializer, ScrambledT
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from catalog.utils import encipher, metropolisHastings, permuteAlph
-from catalog.gpt2 import tokenizer, model
-import torch
 import os
 from django.conf import settings
+from multiprocessing import Process, Queue
+from openai import OpenAI
 
 
 
@@ -72,12 +72,24 @@ class CatalogViewSet(viewsets.ModelViewSet):
     serializer_class = CatalogSerializer
     permission_classes = [AllowAny]
 
-    def compute_perplexity(self, text):
-        inputs = tokenizer.encode(text, return_tensors="pt")
-        with torch.no_grad():
-            outputs = model(inputs, labels=inputs)
-            loss = outputs.loss
-        return torch.exp(loss).item()
+    def useAI(self, messages):
+        client = OpenAI()
+        prompt = f'''
+        Out of the following paragraphs, return only the most coherent one and no other comments:
+        {messages}
+        '''
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",
+            messages=[
+                {"role": "system", "content": "You are a helpful assistant."},
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ]
+        )
+
+        return completion.choices[0].message.content
 
 
     @action(detail=False, methods=['post'])
@@ -89,22 +101,35 @@ class CatalogViewSet(viewsets.ModelViewSet):
                     ' ', ',', '.', ':', ';', '!', '?', '/']
         # print("Request Data:", request.data)  # Debug line
         # Extract data from request
-        print("Request Data:", request.data)
-        enciphered_message = request.data
+        # print("Request Data:", request.data)
+        encipheredMessage = request.data
 
 
 
         # Load transition matrix from file
         # Find best reverse cipher
-        rev_ciphers = [metropolisHastings(alphabet, enciphered_message, M) for i in range(10)]
+        numProcesses = 7
+        queues = [Queue() for _ in range(numProcesses)]
+        processes = []
 
+        for i in range(numProcesses):
+            p = Process(target=metropolisHastings, args=(alphabet, encipheredMessage, M, queues[i]))
+            processes.append(p)
+            p.start()
+
+        rev_ciphers = []
+        for i, p in enumerate(processes):
+            p.join()
+            rev_ciphers.append(queues[i].get())
+        
         # Unscramble the message with the best reverse cipher
-        unscrambled_messages = [encipher(enciphered_message, alphabet, rev_cipher) for rev_cipher in rev_ciphers]
-        scored_paragraphs = [(para, self.compute_perplexity(para)) for para in unscrambled_messages]
-        best_paragraph = min(scored_paragraphs, key=lambda x: x[1])[0]
+        unscrambled_messages = [encipher(encipheredMessage, alphabet, rev_cipher) for rev_cipher in rev_ciphers]
+        best_paragraph = self.useAI(unscrambled_messages)
+        print("Best paragraph:", best_paragraph)  # Debug line
 
         new_catalog_entry = Catalog.objects.create(text=best_paragraph)
         serializer = self.get_serializer(new_catalog_entry)
+
 
         # Return the result as a response
         return Response(serializer.data, status=status.HTTP_201_CREATED)

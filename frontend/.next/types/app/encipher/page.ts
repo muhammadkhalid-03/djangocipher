@@ -1,4 +1,4 @@
-// File: /Users/muhammadkhalid/Desktop/Projects/DjangoEncryption/frontend/app/encipher/page.tsx
+// File: /Users/muhammadkhalid/Desktop/projects/DjangoEncryption/frontend/app/encipher/page.tsx
 import * as entry from '../../../../app/encipher/page.js'
 import type { ResolvingMetadata, ResolvingViewport } from 'next/dist/lib/metadata/types/metadata-interface.js'
 

@@ -225,8 +225,7 @@ Outputs:
                  cipher by the metropolis-hastings algorithm
 """
 
-
-def metropolisHastings(alphabet, encipheredMessage, M, max_iter=10000):
+def metropolisHastings(alphabet, encipheredMessage, M, resultQueue, max_iter=10000):
 
     # initial cipher
     currCipher = permuteAlph(alphabet)
@@ -244,4 +243,5 @@ def metropolisHastings(alphabet, encipheredMessage, M, max_iter=10000):
             # check for best cipher
             if measure(currCipher, encipheredMessage, M, alphabet) > measure(bestRevCipher, encipheredMessage, M, alphabet):
                 bestRevCipher = currCipher.copy()
-    return bestRevCipher
+    # return bestRevCipher
+    resultQueue.put(bestRevCipher)
