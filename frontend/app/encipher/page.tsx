@@ -6,9 +6,11 @@ import { SyncLoader } from "react-spinners";
 import TextModal from "../components/modals/TextModal";
 import TextBox from "../components/TextBox";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000"
+
 // Function to fetch saved data from the backend
 async function fetchData() {
-    const res = await fetch("http://127.0.0.1:8000/api/scrambled/");
+    const res = await fetch(`${BASE_URL}/api/scrambled/`);
     if (!res.ok) {
         throw new Error("Failed to fetch data");
     }
@@ -20,7 +22,7 @@ async function fetchData() {
   }
 
 async function createItem(data: any): Promise<any> {
-    const res = await fetch("http://127.0.0.1:8000/api/scrambled/scramble_message/", {
+    const res = await fetch(`${BASE_URL}/api/scrambled/scramble_message/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -40,7 +42,7 @@ async function createItem(data: any): Promise<any> {
 
 
 async function deleteItem(id: number) {
-    const res = await fetch(`http://127.0.0.1:8000/api/scrambled/${id}/`, {
+    const res = await fetch(`${BASE_URL}/api/scrambled/${id}/`, {
       method: "DELETE",
     });
     if (!res.ok) {
@@ -51,7 +53,7 @@ async function deleteItem(id: number) {
 }
 
 async function updateItem(id: number, data: { text: string }) {
-    const res = await fetch(`http://127.0.0.1:8000/api/scrambled/${id}/`, {
+    const res = await fetch(`${BASE_URL}/api/scrambled/${id}/`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",

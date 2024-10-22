@@ -8,9 +8,11 @@ import SyncLoader from "react-spinners/SyncLoader";
 import Categories from "../components/navbar/Categories";
 import TextModal from "../components/modals/TextModal";
 
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000"
+
 // Function to fetch saved data from the backend
 async function fetchData() {
-  const res = await fetch("http://127.0.0.1:8000/api/catalog/");
+  const res = await fetch(`${BASE_URL}/api/catalog/`);
   if (!res.ok) {
       throw new Error("Failed to fetch data");
   }
@@ -23,7 +25,7 @@ async function fetchData() {
 
 // Function to create a new menu item
 async function createItem(data: any): Promise<any> {
-  const res = await fetch("http://127.0.0.1:8000/api/catalog/process_message/", {
+  const res = await fetch(`${BASE_URL}/api/catalog/process_message/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -42,7 +44,7 @@ async function createItem(data: any): Promise<any> {
 
 
 async function deleteItem(id: number) {
-    const res = await fetch(`http://127.0.0.1:8000/api/catalog/${id}/`, {
+    const res = await fetch(`${BASE_URL}/api/catalog/${id}/`, {
       method: "DELETE",
     });
     if (!res.ok) {
@@ -53,7 +55,7 @@ async function deleteItem(id: number) {
 }
 
 async function updateItem(id: number, data: { text: string }) {
-  const res = await fetch(`http://127.0.0.1:8000/api/catalog/${id}/`, {
+  const res = await fetch(`${BASE_URL}/api/catalog/${id}/`, {
       method: "PUT",
       headers: {
           "Content-Type": "application/json",
