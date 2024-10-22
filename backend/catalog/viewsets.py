@@ -1,6 +1,5 @@
 from django.core.mail import send_mail
 import json
-import numpy as np
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from catalog.models import Catalog, Contact, ScrambledText
