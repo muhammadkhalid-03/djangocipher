@@ -107,7 +107,7 @@ class CatalogViewSet(viewsets.ModelViewSet):
 
         # Load transition matrix from file
         # Find best reverse cipher
-        numProcesses = 7
+        numProcesses = 4
         queues = [Queue() for _ in range(numProcesses)]
         processes = []
 
