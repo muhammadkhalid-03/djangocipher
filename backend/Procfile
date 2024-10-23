@@ -1,0 +1,1 @@
+web: gunicorn djangoencryption_backend.wsgi:application --timeout 180 --workers 2 --threads 4 --max-requests 1000
