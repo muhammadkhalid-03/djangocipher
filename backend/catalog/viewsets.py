@@ -87,7 +87,7 @@ class CatalogViewSet(viewsets.ModelViewSet):
                 }
             ]
         )
-
+        print("AI response given")
         return completion.choices[0].message.content
 
 
@@ -107,6 +107,7 @@ class CatalogViewSet(viewsets.ModelViewSet):
 
         # Load transition matrix from file
         # Find best reverse cipher
+        print("starting the process")
         numProcesses = 4
         queues = [Queue() for _ in range(numProcesses)]
         processes = []
@@ -120,7 +121,7 @@ class CatalogViewSet(viewsets.ModelViewSet):
         for i, p in enumerate(processes):
             p.join()
             rev_ciphers.append(queues[i].get())
-        
+        print("done processing")
         # Unscramble the message with the best reverse cipher
         unscrambled_messages = [encipher(encipheredMessage, alphabet, rev_cipher) for rev_cipher in rev_ciphers]
         best_paragraph = self.useAI(unscrambled_messages)
