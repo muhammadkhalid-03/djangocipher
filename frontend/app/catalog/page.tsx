@@ -8,7 +8,10 @@ import SyncLoader from "react-spinners/SyncLoader";
 import Categories from "../components/navbar/Categories";
 import TextModal from "../components/modals/TextModal";
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000"
+// const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || "http://127.0.0.1:8000"
+const BASE_URL = "http://127.0.0.1:8000"
+
+
 
 // Function to fetch saved data from the backend
 async function fetchData() {

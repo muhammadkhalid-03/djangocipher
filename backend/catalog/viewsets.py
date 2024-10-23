@@ -7,10 +7,11 @@ from catalog.serializers import CatalogSerializer, ContactSerializer, ScrambledT
 from rest_framework import viewsets, status
 from rest_framework.permissions import AllowAny
 from catalog.utils import encipher, metropolisHastings, permuteAlph
+from catalog.gpt2 import tokenizer, model
+import torch
 import os
 from django.conf import settings
 from multiprocessing import Process, Queue
-from openai import OpenAI
 
 
 
@@ -71,24 +72,31 @@ class CatalogViewSet(viewsets.ModelViewSet):
     serializer_class = CatalogSerializer
     permission_classes = [AllowAny]
 
-    def useAI(self, messages):
-        client = OpenAI()
-        prompt = f'''
-        Out of the following paragraphs, return only the most coherent one and no other comments:
-        {messages}
-        '''
-        completion = client.chat.completions.create(
-            model="gpt-4o-mini",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {
-                    "role": "user",
-                    "content": prompt
-                }
-            ]
-        )
-        print("AI response given")
-        return completion.choices[0].message.content
+    def compute_perplexity(self, text):
+        inputs = tokenizer.encode(text, return_tensors="pt")
+        with torch.no_grad():
+            outputs = model(inputs, labels=inputs)
+            loss = outputs.loss
+        return torch.exp(loss).item()
+
+    # def useAI(self, messages):
+    #     client = OpenAI()
+    #     prompt = f'''
+    #     Out of the following paragraphs, return only the most coherent one and no other comments:
+    #     {messages}
+    #     '''
+    #     completion = client.chat.completions.create(
+    #         model="gpt-4o-mini",
+    #         messages=[
+    #             {"role": "system", "content": "You are a helpful assistant."},
+    #             {
+    #                 "role": "user",
+    #                 "content": prompt
+    #             }
+    #         ]
+    #     )
+    #     print("AI response given")
+    #     return completion.choices[0].message.content
 
 
     @action(detail=False, methods=['post'])
@@ -105,27 +113,36 @@ class CatalogViewSet(viewsets.ModelViewSet):
 
 
 
-        # Load transition matrix from file
-        # Find best reverse cipher
+        # Use multiple processes to optimize getting result
         print("starting the process")
-        numProcesses = 4
+        numProcesses = 7
         queues = [Queue() for _ in range(numProcesses)]
         processes = []
 
+        # Create and start multiple processes for MCMC sampling
         for i in range(numProcesses):
             p = Process(target=metropolisHastings, args=(alphabet, encipheredMessage, M, queues[i]))
             processes.append(p)
             p.start()
 
         rev_ciphers = []
+
+        # Wait for all processes to finish and retrieve results from queues
         for i, p in enumerate(processes):
             p.join()
             rev_ciphers.append(queues[i].get())
-        print("done processing")
+
+        print("done processing") # Logging message for MCMC finish
+
         # Unscramble the message with the best reverse cipher
         unscrambled_messages = [encipher(encipheredMessage, alphabet, rev_cipher) for rev_cipher in rev_ciphers]
-        best_paragraph = self.useAI(unscrambled_messages)
-        print("Best paragraph:", best_paragraph)  # Debug line
+
+        # Array of (paragraph, score)
+        scored_paragraphs = [(para, self.compute_perplexity(para)) for para in unscrambled_messages]
+
+        # Most coherent paragraph with min perplexity score
+        best_paragraph = min(scored_paragraphs, key=lambda x: x[1])[0]
+
 
         new_catalog_entry = Catalog.objects.create(text=best_paragraph)
         serializer = self.get_serializer(new_catalog_entry)

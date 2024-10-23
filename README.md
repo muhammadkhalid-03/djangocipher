@@ -2,6 +2,8 @@
 
 A program to crack substitution ciphers using the Metropolis-Hastings algorithm.
 
+## Demo video: https://muhammad-khalid.vercel.app/projects
+
 The python implementation of the algorithm is available at [MCMC Cipher Cracker](https://github.com/muhammadkhalid-03/MCMC-Cipher-Cracker.git)
 
 ## Technologies
@@ -69,6 +71,8 @@ npm run dev
 ```
 
 ## Access the Application
+
+### Note: Deploying the application costs too much money because of the amount of memory & processing power required. Therefore, it's only available if you run the application locally
 
 - Backend: http://127.0.0.1:8000
 - Frontend: http://localhost:3000

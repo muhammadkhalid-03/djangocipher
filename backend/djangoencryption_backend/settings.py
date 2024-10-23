@@ -18,7 +18,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # settings.py
 
-SECRET_KEY = os.getenv('SECRET_KEY')
+# SECRET_KEY = os.getenv('SECRET_KEY')
+SECRET_KEY = 'django-insecure-x@5)s28q_3g(fhcjanwbv%#&a7d=(r0ytxs7c8gwqi-(-+o#r8'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -27,8 +28,8 @@ SECRET_KEY = os.getenv('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['djangocipher.onrender.com', 'djangocipher.vercel.app']
-# ALLOWED_HOSTS = []
+# ALLOWED_HOSTS = ['djangocipher.onrender.com', 'djangocipher.vercel.app']
+ALLOWED_HOSTS = []
 
 
 # Application definition
