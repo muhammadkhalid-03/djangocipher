@@ -32,7 +32,7 @@ class ContactViewSet(viewsets.ModelViewSet):
         new_contact_entry = Contact.objects.create(name=name, email=email, message=message)
         self.get_serializer(new_contact_entry)
 
-        # Send email
+        # send an email - not needed I'll just leave it cause I'm too lazy to deal with bugs if deleted
         send_mail(
             subject=f"Contact Form Submission from {name}",
             message=f"Name: {name}\nEmail: {email}\nMessage: {message}",
@@ -54,8 +54,7 @@ class ScrambledTextViewSet(viewsets.ModelViewSet):
                     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                     ' ', ',', '.', ':', ';', '!', '?', '/']
 
-        # Extract data from request
-        # message = request.data
+        # extract data from request
         message = request.data['scrambled_text']
         enciphered_message = encipher(message, permuteAlph(alphabet), alphabet)
         print(message)
@@ -79,6 +78,7 @@ class CatalogViewSet(viewsets.ModelViewSet):
             loss = outputs.loss
         return torch.exp(loss).item()
 
+    # wanna keep this even though running gpt-2 locally. Maybe I need it in the future
     # def useAI(self, messages):
     #     client = OpenAI()
     #     prompt = f'''
@@ -107,19 +107,18 @@ class CatalogViewSet(viewsets.ModelViewSet):
                     'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
                     ' ', ',', '.', ':', ';', '!', '?', '/']
         # print("Request Data:", request.data)  # Debug line
-        # Extract data from request
         # print("Request Data:", request.data)
         encipheredMessage = request.data
 
 
 
-        # Use multiple processes to optimize getting result
+        # multiple processes to optimize getting result
         print("starting the process")
         numProcesses = 7
         queues = [Queue() for _ in range(numProcesses)]
         processes = []
 
-        # Create and start multiple processes for MCMC sampling
+        # create and start multiple processes for MCMC sampling I'm a genius for thinking of this
         for i in range(numProcesses):
             p = Process(target=metropolisHastings, args=(alphabet, encipheredMessage, M, queues[i]))
             processes.append(p)
@@ -127,20 +126,20 @@ class CatalogViewSet(viewsets.ModelViewSet):
 
         rev_ciphers = []
 
-        # Wait for all processes to finish and retrieve results from queues
+        # wait for all processes to finish and retrieve results from queues
         for i, p in enumerate(processes):
             p.join()
             rev_ciphers.append(queues[i].get())
 
         print("done processing") # Logging message for MCMC finish
 
-        # Unscramble the message with the best reverse cipher
+        # unscramble the message with the best reverse cipher
         unscrambled_messages = [encipher(encipheredMessage, alphabet, rev_cipher) for rev_cipher in rev_ciphers]
 
-        # Array of (paragraph, score)
+        # array of (paragraph, score)
         scored_paragraphs = [(para, self.compute_perplexity(para)) for para in unscrambled_messages]
 
-        # Most coherent paragraph with min perplexity score
+        # most coherent paragraph with min perplexity score
         best_paragraph = min(scored_paragraphs, key=lambda x: x[1])[0]
 
 
@@ -148,5 +147,5 @@ class CatalogViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(new_catalog_entry)
 
 
-        # Return the result as a response
+        # return the result as a response
         return Response(serializer.data, status=status.HTTP_201_CREATED)

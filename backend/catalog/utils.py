@@ -114,7 +114,7 @@ def transitionMatrix(readFile, writeFile, alphabet):
                     except KeyError:
                         continue
         total = 0.0
-        # Normalize the counts to probabilities
+        # normalize the counts to probabilities
         for c1 in M:
             total += sum(M[c1].values())
             # for c2 in M[c1]:
@@ -174,7 +174,7 @@ def acceptProb(X, Y, encipheredMessage, M, alphabet):
     # difference to be used to calculate acceptance probability to avoid math error
     diff = logProbY - logProbX
 
-    # Avoiding overflow by comparing values in log space
+    # avoiding overflow by comparing values in log space
     if diff > 0:
         acceptanceProbability = 1.0
     else:
