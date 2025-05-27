@@ -73,10 +73,3 @@ npm install
 ```
 npm run dev
 ```
-
-## Access the Application
-
-### Note: Deploying the application costs too much money because of the amount of memory & processing power required. Therefore, it's only available if you run the application locally
-
-- Backend: http://127.0.0.1:8000
-- Frontend: http://localhost:3000
