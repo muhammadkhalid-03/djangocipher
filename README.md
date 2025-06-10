@@ -8,75 +8,12 @@ The python implementation of the algorithm is available at [MCMC Cipher Cracker]
 
 ## About
 
-This project uses a version of the Metropolis-Hastings algorithm to crack substitution ciphers. It runs 10,000 iterations to produce a suitable reverse cipher. It then passes each unscrambled message into a pre-trained GPT-2 model to give the message a perplexity score (how english-sounding is it?). Finally, it returns the best paragraph to the user. This entire process is run 7 times in parallel using python's `multiprocessing` library to return the results in under 10 seconds.
+This project uses a version of the Metropolis-Hastings algorithm to crack substitution ciphers. It sends the scrambled text to an AWS Lambda function. This function spins up 7 concurrent worker Lambda functions each of which runs 10,000 iterations of the sampling algorithm to produce a suitable reverse cipher. Once the results of the concurrent worker lambda functions are returned to the main function, the main function runs another Lambda function to make an API call to the ChatGPT API (I did this to keep things a little organized). In this API call, the 7 unscrambled-ish results of the sampling algorithm are sent to be evaluated for englishness. When the worker Lambda gets the final results from the ChatGPT API, it returns the best paragraph to the user.
 
 ## Technologies
 
 Next.js\
-Django\
 TailwindCSS\
-SQLite\
-Python (to implement the algorithm)
-
-## Prerequisites
-
-- Python 3.8+
-- Node.js 14+
-- npm
-
-## Installation
-
-### Clone the repository
-
-```
-git clone https://github.com/muhammadkhalid-03/djangocipher.git
-```
-
-### Set up the backend
-
-#### Create virtual environment
-
-```
-cd djangocipher/backend
-python3 -m venv env
-source env/bin/activate
-```
-
-#### Install the required Python packages
-
-```
-pip install -r requirements.txt
-```
-
-#### Run the development server
-
-```
-python manage.py runserver
-```
-
-### Set up the frontend
-
-In a new terminal window, navigate to the frontend directory:
-
-```
-cd djangocipher/frontend/
-```
-
-#### Install all the necessary dependencies
-
-```
-npm install
-```
-
-#### Run the Next.js development server
-
-```
-npm run dev
-```
-
-## Access the Application
-
-### Note: Deploying the application costs too much money because of the amount of memory & processing power required. Therefore, it's only available if you run the application locally
-
-- Backend: http://127.0.0.1:8000
-- Frontend: http://localhost:3000
+Python (to implement the algorithm)\
+AWS Lambda
+AWS API Gateway
