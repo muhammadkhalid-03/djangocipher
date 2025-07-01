@@ -2,7 +2,7 @@
 
 A program to crack substitution ciphers using a version of the Metropolis-Hastings algorithm.
 
-## Demo video: https://muhammad-khalid.vercel.app/projects
+## Demo video: https://muhammadkhalid.dev/projects
 
 The python implementation of the algorithm is available at [MCMC Cipher Cracker](https://github.com/muhammadkhalid-03/MCMC-Cipher-Cracker.git)
 
